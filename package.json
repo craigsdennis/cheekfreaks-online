@@ -1,13 +1,19 @@
 {
-  "name": "langchain-and-vectorize",
+  "name": "cheekfreaks",
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "deploy": "wrangler deploy",
-    "dev": "wrangler dev",
-    "start": "wrangler dev"
+    "deploy": "wrangler deploy --assets ./assets",
+    "dev": "wrangler dev --assets ./assets --remote",
+    "start": "wrangler dev --assets ./assets --remote"
   },
   "devDependencies": {
     "wrangler": "^3.0.0"
+  },
+  "dependencies": {
+    "@cloudflare/ai": "^1.0.47",
+    "@langchain/cloudflare": "^0.0.1",
+    "hono": "^3.12.6",
+    "langchain": "^0.1.4"
   }
 }
