@@ -40,9 +40,7 @@ function formatDocsToLyrics(docs) {
 		.join('\n\n');
 }
 
-// TODO: This should be a POST
 app.post('/prompt', async (c) => {
-	// https://js.langchain.com/docs/modules/data_connection/retrievers/
 	const body = await c.req.json();
 	const embeddings = new CloudflareWorkersAIEmbeddings({
 		binding: c.env.AI,
@@ -61,11 +59,10 @@ app.post('/prompt', async (c) => {
 	const vectorStoreRetriever = store.asRetriever();
 
 	const userMessage = body.userMessage;
-	// Just get the last bits
 	const messageObjects = body.messages.map((msg) => {
 		return [msg.role === 'assistant' ? 'ai' : msg.role, msg.content];
 	});
-  console.log("Trying to send the user message", userMessage);
+	console.log('Trying to send the user message', userMessage);
 	const prompt = ChatPromptTemplate.fromMessages([
 		SystemMessagePromptTemplate.fromTemplate(`
     You are a huge fan of the band Cheekface. 
@@ -104,17 +101,12 @@ app.post('/prompt', async (c) => {
 		new StringOutputParser(),
 	]);
 
-  try {
-    const chainStream = await chain.stream(userMessage);
-    return streamText(c, async (stream) => {
-      for await (const token of chainStream) {
-        console.log("token", token);
-        stream.write(token);
-      }
-    });
-  } catch(err) {
-    console.error(err);
-  }
+	const chainStream = await chain.stream(userMessage);
+	return streamText(c, async (stream) => {
+		for await (const token of chainStream) {
+			stream.write(token);
+		}
+	});
 });
 
 // Quick test to make sure we are getting back documents we want
@@ -142,7 +134,7 @@ app.get('/load-em-up', async (c) => {
 	console.log('Getting songs from R2');
 	const songs = await getSongs(c.env.LYRICS_BUCKET);
 	console.log(`Retrieved ${songs.length}`);
-	// Chunk and split (use the defaults)
+	// Chunk and split
 	const splitter = new RecursiveCharacterTextSplitter({ chunkSize: 200, chunkOverlap: 10 });
 	for (const song of songs) {
 		const docs = await splitter.createDocuments([song.lyrics], [{ title: song.title, key: song.key }]);

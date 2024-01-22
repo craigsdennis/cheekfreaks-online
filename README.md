@@ -1,14 +1,27 @@
 # Cheekfreaks Online
 
-An exploration using [Workers AI](https://developers.cloudflare.com/workers-ai/) w/ Hono and [LangChain](https://js.langchain.com/docs/integrations/vectorstores/cloudflare_vectorize) [abstractions](https://js.langchain.com/docs/integrations/chat/cloudflare_workersai) to build a super music fan that you can chat with.
+An exploration using [Workers AI](https://developers.cloudflare.com/workers-ai/) w/ [Hono](https://hono.dev/getting-started/cloudflare-workers) and [LangChain](https://js.langchain.com/docs/integrations/vectorstores/cloudflare_vectorize) [abstractions](https://js.langchain.com/docs/integrations/chat/cloudflare_workersai) to build a super music fan that you can chat with.
 
-Lyrics are uploaded as text files to R2, which is then used to create [embeddings](https://js.langchain.com/docs/integrations/text_embedding/cloudflare_ai) and store them in Cloudflare's vector database [Vectorize](https://js.langchain.com/docs/integrations/text_embedding/cloudflare_ai).
+Lyrics are uploaded as text files to [R2](https://developers.cloudflare.com/r2/), which is then used to create [embeddings](https://js.langchain.com/docs/integrations/text_embedding/cloudflare_ai) and store them in Cloudflare's vector database [Vectorize](https://js.langchain.com/docs/integrations/text_embedding/cloudflare_ai).
 
-Chat pulls relevant lyrics.
+Chat pulls in relevant lyrics via a retriever.
 
 This, like all of us, is a work in progress.
 
 ## Installation
+
+```bash
+npm install
+```
+
+Set up your secrets
+
+```bash
+npx wrangler secret put CLOUDFLARE_ACCOUNT_ID
+npx wrangler secret put CLOUDFLARE_CLOUDFLARE_API_TOKEN
+```
+
+Create your Vector database
 
 ```bash
 npx wrangler vectorize create lyrics --preset "@cf/baai/bge-base-en-v1.5"
@@ -16,6 +29,20 @@ npx wrangler vectorize create lyrics --preset "@cf/baai/bge-base-en-v1.5"
 
 Upload songs in separate files to R2
 
+## Deploy
+
+```bash
+npm run deploy
+```
+
+Tail the logs
+
+```bash
+npx wrangler tail
+```
+
 ## TODO
 
-- [ ] Create character profiles based on songs, allow chatting with different folks
+- [ ] Explore D1 History
+- [ ] Create character profiles based on songs, allow chatting with different types
+- [ ] Use a tool to get the Spotify link for the song
