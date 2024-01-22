@@ -9,7 +9,7 @@
 	</head>
 	<body>
 		<div id="app">
-			<h1>Cheekfreaks Online</h1>
+			<h1>Cheekfreaks Online - ALPHA</h1>
 			<form @submit.prevent="sendPrompt">
 				<label for="modelSelect">Model:</label>
 				<select id="modelSelect" v-model="model">
@@ -41,9 +41,7 @@
 						</div>
 					</div>
 				</div>
-
-			<h2 v-text="asked"></h2>
-			<div v-html="aiResponse"></div>
+				<p>🎧 listen to <a href="https://linktr.ee/cheekface" target="_blank">cheekface</a></p>
 		</div>
 		<script>
 			const { createApp } = Vue;

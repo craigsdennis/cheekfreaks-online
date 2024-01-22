@@ -1,6 +1,8 @@
 # Cheekfreaks Online
 
-An exploration using [Workers AI](https://developers.cloudflare.com/workers-ai/) w/ [Hono](https://hono.dev/getting-started/cloudflare-workers) and [LangChain](https://js.langchain.com/docs/integrations/vectorstores/cloudflare_vectorize) [abstractions](https://js.langchain.com/docs/integrations/chat/cloudflare_workersai) to build a super music fan that you can chat with.
+Dontcha hate it when AI doesn't know your favorite band? I'm obsessed with the band [Cheekface](https://linktr.ee/cheekface). I self identify as a Cheekfreak.
+
+This is an exploration using [Workers AI](https://developers.cloudflare.com/workers-ai/) w/ [Hono](https://hono.dev/getting-started/cloudflare-workers) and [LangChain](https://js.langchain.com/docs/integrations/vectorstores/cloudflare_vectorize) [abstractions](https://js.langchain.com/docs/integrations/chat/cloudflare_workersai) to build a super music fan that you can chat with.
 
 Lyrics are uploaded as text files to [R2](https://developers.cloudflare.com/r2/), which is then used to create [embeddings](https://js.langchain.com/docs/integrations/text_embedding/cloudflare_ai) and store them in Cloudflare's vector database [Vectorize](https://js.langchain.com/docs/integrations/text_embedding/cloudflare_ai).
 
