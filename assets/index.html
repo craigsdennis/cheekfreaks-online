@@ -3,48 +3,59 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="styles.css">
+		<link rel="stylesheet" href="styles.css" />
 		<title>Cheekfreak</title>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.14/vue.global.prod.min.js"></script>
 	</head>
 	<body>
 		<div id="app">
 			<h1>Cheekfreaks Online - ALPHA</h1>
-			<form @submit.prevent="sendPrompt">
-				<label for="modelSelect">Model:</label>
-				<select id="modelSelect" v-model="model">
-					<option v-for="model in models">{{model}}</option>
-				</select>
-				<div id="window">
-					<div id="title-bar">
-						<div id="title">America's Local Band Instant Messenger</div>
-						<div id="buttons">
-              <a class="title-button" @click.prevent="resetChat">X</a>
-        		</div>
+			<div>
+				<form>
+					<label for="modelSelect">Model:</label>
+					<select id="modelSelect" v-model="model">
+						<option v-for="model in models">{{model}}</option>
+					</select>
+				</form>
+			</div>
+			<div id="window">
+				<div id="title-bar">
+					<div id="title">America's Local Band Instant Messenger</div>
+					<div id="buttons">
+						<a class="title-button" @click.prevent="resetChat">X</a>
 					</div>
-					<div id="message-window">
-						<div id="conversation">
-							<div>
-                <span class="username">{{otherUsername}}:</span> sup?
-              </div>
-              <!-- Dynamic Messages here -->
-              <div v-for="message in messages">
-                <span class="username" :class="message.role === 'user' ? 'you' : ''">{{message.role === "user" ? "You" : otherUsername }}:</span> {{message.content}}
-              </div>
-							<!-- More messages here -->
+				</div>
+				<div id="message-window">
+					<div id="conversation">
+						<div><span class="username">{{otherUsername}}:</span> sup?</div>
+						<!-- Dynamic Messages here -->
+						<div v-for="message in messages">
+							<span class="username" :class="message.role === 'user' ? 'you' : ''"
+								>{{message.role === "user" ? "You" : otherUsername }}:</span
+							>
+							{{message.content}}
 						</div>
-						<div id="message-input">
-							<form @submit.prevent="sendPrompt">
+            <form @submit.prevent="sendPrompt">
+						  <div id="message-input">
 								<input type="text" id="message-text" placeholder="Type your message here" name="prompt" v-model="userMessage" />
 								<button id="send-button" type="Submit">Send</button>
+              </div>
 							</form>
 						</div>
 					</div>
 				</div>
 				<p>🎧 listen to <a href="https://linktr.ee/cheekface" target="_blank">cheekface</a></p>
+			</div>
 		</div>
 		<script>
 			const { createApp } = Vue;
+
+			const sounds = {
+				doorOpen: new Audio('/audio/doorOpen.wav'),
+        doorSlam: new Audio('/audio/doorSlam.wav'),
+				imSent: new Audio('/audio/imSent.wav'),
+				imReceived: new Audio('/audio/imReceived.wav'),
+			};
 
 			const app = createApp({
 				data() {
@@ -58,25 +69,28 @@
 						models,
 						model: models[0],
 						userMessage: '',
-            otherUsername: 'Cheekfreak',
+						otherUsername: 'Cheekfreak',
 						messages: [],
 						asked: '',
 					};
 				},
 				methods: {
-          resetChat() {
-            this.userMessage = "";
-            this.messages = [];
-          },
+					resetChat() {
+						this.userMessage = '';
+						this.messages = [];
+						sounds.doorSlam.play();
+            sounds.doorOpen.play();
+					},
 					async sendPrompt() {
 						const bodyJSON = JSON.stringify({
 							model: this.model,
-              messages: this.messages,
-              userMessage: this.userMessage
+							messages: this.messages,
+							userMessage: this.userMessage,
 						});
-            this.messages.push({role: "user", content: this.userMessage});
-            this.userMessage = "";
-            this.messages.push({role: "assistant", content: ""});
+						this.messages.push({ role: 'user', content: this.userMessage });
+						sounds.imSent.play();
+						this.userMessage = '';
+						this.messages.push({ role: 'assistant', content: '' });
 						const response = await fetch('/prompt', {
 							method: 'POST',
 							headers: {
@@ -89,9 +103,10 @@
 							const { value, done } = await reader.read();
 							if (done) {
 								console.log('Stream done');
+								sounds.imReceived.play();
 								break;
 							}
-							this.messages[this.messages.length -1].content += value;
+							this.messages[this.messages.length - 1].content += value;
 						}
 					},
 				},

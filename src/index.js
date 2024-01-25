@@ -144,7 +144,7 @@ app.get('/load-em-up', async (c) => {
 		console.log('First one:', JSON.stringify(docs[0]));
 		console.log(`Adding to Vectorize`);
 		// FIXME: Vectorize doesn't like this loc `object` type
-		docs.forEach((doc) => delete doc.metadata.loc);
+		//docs.forEach((doc) => delete doc.metadata.loc);
 		const indexedIds = await store.addDocuments(docs);
 		console.log(`Inserted ${JSON.stringify(indexedIds)}`);
 	}
